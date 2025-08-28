@@ -1,0 +1,110 @@
+name: Deploy ML Serving Infrastructure
+
+on:
+  push:
+    branches: [main]
+    paths: 
+      - 'docker/**'
+      - 'serving/**'
+  workflow_dispatch:
+
+env:
+  PROJECT_ID: stunning-cell-465612-n8
+  REGION: us-east1
+  ZONE: us-east1-b
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+    environment: production
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Authenticate to GCP
+        uses: google-github-actions/auth@v2
+        with:
+          credentials_json: ${{ secrets.GCP_SA_KEY_PROD }}
+
+      - name: Set up Cloud SDK
+        uses: google-github-actions/setup-gcloud@v2
+
+      - name: Configure Docker for Artifact Registry
+        run: gcloud auth configure-docker us-east1-docker.pkg.dev
+
+      - name: Build Docker image
+        run: |
+          docker build -t us-east1-docker.pkg.dev/${{ env.PROJECT_ID }}/realestatemodels/real_estate:${{ github.sha }} \
+                       -t us-east1-docker.pkg.dev/${{ env.PROJECT_ID }}/realestatemodels/real_estate:latest \
+                       ./docker/
+
+      - name: Push Docker image
+        run: |
+          docker push us-east1-docker.pkg.dev/${{ env.PROJECT_ID }}/realestatemodels/real_estate:${{ github.sha }}
+          docker push us-east1-docker.pkg.dev/${{ env.PROJECT_ID }}/realestatemodels/real_estate:latest
+
+  deploy-to-vm:
+    needs: build-and-push
+    runs-on: ubuntu-latest
+    environment: production
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Authenticate to GCP
+        uses: google-github-actions/auth@v2
+        with:
+          credentials_json: ${{ secrets.GCP_SA_KEY_PROD }}
+
+      - name: Set up Cloud SDK
+        uses: google-github-actions/setup-gcloud@v2
+
+      - name: Deploy to VM
+        run: |
+          # Copy deployment script to VM
+          gcloud compute scp ./scripts/deploy-serving.sh ${{ secrets.GCP_VM_NAME_PROD }}:~/ \
+            --zone=${{ env.ZONE }}
+          
+          # Copy web files
+          gcloud compute scp ./serving/index.html ${{ secrets.GCP_VM_NAME_PROD }}:~/ \
+            --zone=${{ env.ZONE }}
+          
+          # Execute deployment
+          gcloud compute ssh ${{ secrets.GCP_VM_NAME_PROD }} \
+            --zone=${{ env.ZONE }} \
+            --command="chmod +x ~/deploy-serving.sh && ~/deploy-serving.sh ${{ github.sha }}"
+
+  setup-infrastructure:
+    if: github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    environment: production
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Authenticate to GCP
+        uses: google-github-actions/auth@v2
+        with:
+          credentials_json: ${{ secrets.GCP_SA_KEY_PROD }}
+
+      - name: Set up Cloud SDK
+        uses: google-github-actions/setup-gcloud@v2
+
+      - name: Create firewall rules
+        run: |
+          # Check if rules exist, create if they don't
+          if ! gcloud compute firewall-rules describe allow-8501-tcp &>/dev/null; then
+            gcloud compute firewall-rules create allow-8501-tcp \
+              --allow=tcp:8501 \
+              --network=default \
+              --source-ranges=0.0.0.0/0 \
+              --description="Allow traffic to TensorFlow Serving on port 8501"
+          fi
+          
+          if ! gcloud compute firewall-rules describe allow-8000-tcp &>/dev/null; then
+            gcloud compute firewall-rules create allow-8000-tcp \
+              --allow=tcp:8000 \
+              --network=default \
+              --source-ranges=0.0.0.0/0 \
+              --description="Allow traffic to web server on port 8000"
+          fi
