@@ -1,0 +1,33 @@
+name: Complete ML Pipeline Deployment
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  deploy-bigquery-models:
+    uses: ./.github/workflows/deploy-bq-models.yml
+    secrets: inherit
+
+  deploy-serving-infrastructure:
+    uses: ./.github/workflows/deploy-serving.yml
+    secrets: inherit
+    needs: deploy-bigquery-models
+
+  integration-test:
+    runs-on: ubuntu-latest
+    needs: [deploy-bigquery-models, deploy-serving-infrastructure]
+    environment: production
+    steps:
+      - name: Test BigQuery ML Model
+        run: |
+          # Add BigQuery ML model testing here
+          echo "Testing BigQuery ML model..."
+
+      - name: Test Serving Endpoint
+        run: |
+          # Test your serving endpoint
+          curl -X POST http://${{ secrets.GCP_VM_EXTERNAL_IP }}:8501/v1/models/real_estate_price_model:predict \
+            -H "Content-Type: application/json" \
+            -d '{"instances": [{"feature1": 1.0, "feature2": 2.0}]}'
