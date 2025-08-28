@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Real Estate Price Predictor</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 20px;
+      line-height: 1.6;
+    }
+    .container {
+      max-width: 600px;
+      margin: auto;
+    }
+    .input-group {
+      margin-bottom: 15px;
+    }
+    label {
+      display: block;
+      font-weight: bold;
+    }
+    input[type="text"], input[type="number"], select {
+      width: 100%;
+      padding: 8px;
+      margin-top: 5px;
+      box-sizing: border-box;
+    }
+    button {
+      background-color: #4CAF50;
+      color: white;
+      padding: 10px 15px;
+      border: none;
+      cursor: pointer;
+      font-size: 16px;
+    }
+    #result {
+      margin-top: 20px;
+      padding: 15px;
+      border: 1px solid #ccc;
+      white-space: pre-wrap;
+      background-color: #f9f9f9;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Real Estate Price Predictor</h1>
+    <p>Enter the property details to get a price prediction.</p>
+    
+    <div class="input-group">
+      <label for="Type">Type:</label>
+      <select id="Type">
+        <option value="中古マンション等">Used Condominium, etc.</option>
+      </select>
+    </div>
+    <div class="input-group">
+      <label for="Prefecture">Prefecture:</label>
+      <select id="Prefecture">
+        <option value="山形県">Yamagata Prefecture</option>
+        <option value="北海道">Hokkaido Prefecture</option>
+        <option value="青森県">Aomori Prefecture</option>
+        <option value="岩手県">Iwate Prefecture</option>
+        <option value="宮城県">Miyagi Prefecture</option>
+        <option value="秋田県">Akita Prefecture</option>
+        <option value="福島県">Fukushima Prefecture</option>
+        <option value="茨城県">Ibaraki Prefecture</option>
+        <option value="栃木県">Tochigi Prefecture</option>
+        <option value="群馬県">Gumma Prefecture</option>
+        <option value="埼玉県">Saitama Prefecture</option>
+        <option value="千葉県">Chiba Prefecture</option>
+        <option value="東京都">Tokyo Prefecture</option>
+        <option value="神奈川県">Kanagawa Prefecture</option>
+        <option value="新潟県">Niigata Prefecture</option>
+        <option value="富山県">Toyama Prefecture</option>
+        <option value="石川県">Ishikawa Prefecture</option>
+        <option value="福井県">Fukui Prefecture</option>
+        <option value="山梨県">Yamanashi Prefecture</option>
+        <option value="長野県">Nagano Prefecture</option>
+        <option value="岐阜県">Gifu Prefecture</option>
+        <option value="静岡県">Shizuoka Prefecture</option>
+        <option value="愛知県">Aichi Prefecture</option>
+        <option value="三重県">Mie Prefecture</option>
+        <option value="滋賀県">Shiga Prefecture</option>
+        <option value="京都府">Kyoto Prefecture</option>
+        <option value="大阪府">Osaka Prefecture</option>
+        <option value="兵庫県">Hyogo Prefecture</option>
+        <option value="奈良県">Nara Prefecture</option>
+        <option value="和歌山県">Wakayama Prefecture</option>
+        <option value="鳥取県">Tottori Prefecture</option>
+        <option value="島根県">Shimane Prefecture</option>
+        <option value="岡山県">Okayama Prefecture</option>
+        <option value="広島県">Hiroshima Prefecture</option>
+      </select>
+    </div>
+    <div class="input-group">
+      <label for="City">City:</label>
+      <select id="City">
+        <option value="山形市">Yamagata City</option>
+        <option value="鶴岡市">Tsuruoka City</option>
+        <option value="札幌市厚別区">Sapporo Atsubetsu Ward</option>
+        <option value="札幌市中央区">Sapporo Chuo Ward</option>
+        <option value="札幌市南区">Sapporo Minami Ward</option>
+        <option value="札幌市豊平区">Sapporo Toyohira Ward</option>
+        <option value="青森市">Aomori City</option>
+        <option value="弘前市">Hirosaki City</option>
+        <option value="盛岡市">Morioka City</option>
+        <option value="仙台市青葉区">Sendai Aoba Ward</option>
+        <option value="仙台市宮城野区">Sendai Miyagino Ward</option>
+        <option value="仙台市太白区">Sendai Taihaku Ward</option>
+        <option value="秋田市">Akita City</option>
+        <option value="郡山市">Koriyama City</option>
+        <option value="会津若松市">Aizuwakamatsu City</option>
+        <option value="取手市">Toride City</option>
+        <option value="龍ケ崎市">Ryugasaki City</option>
+        <option value="日立市">Hitachi City</option>
+        <option value="土浦市">Tsuchiura City</option>
+        <option value="水戸市">Mito City</option>
+        <option value="那須塩原市">Nasu-shiobara City</option>
+        <option value="宇都宮市">Utsunomiya City</option>
+        <option value="足利市">Ashikaga City</option>
+        <option value="高崎市">Takasaki City</option>
+        <option value="前橋市">Maebashi City</option>
+        <option value="川口市">Kawaguchi City</option>
+        <option value="さいたま市南区">Saitama Minami Ward</option>
+        <option value="蕨市">Warabi City</option>
+        <option value="所沢市">Tokorozawa City</option>
+        <option value="草加市">Soka City</option>
+        <option value="和光市">Wako City</option>
+        <option value="千葉市稲毛区">Chiba Inage Ward</option>
+        <option value="船橋市">Funabashi City</option>
+        <option value="浦安市">Urayasu City</option>
+        <option value="習志野市">Narashino City</option>
+        <option value="我孫子市">Abiko City</option>
+        <option value="練馬区">Nerima Ward</option>
+        <option value="江東区">Koto Ward</option>
+        <option value="中央区">Chuo Ward</option>
+        <option value="台東区">Taito Ward</option>
+        <option value="世田谷区">Setagaya Ward</option>
+        <option value="大田区">Ota Ward</option>
+        <option value="府中市">Fuchu City</option>
+        <option value="横浜市神奈川区">Yokohama Kanagawa Ward</option>
+        <option value="横浜市西区">Yokohama Nishi Ward</option>
+        <option value="横浜市中区">Yokohama Naka Ward</option>
+        <option value="川崎市川崎区">Kawasaki Kawasako Ward</option>
+        <option value="横浜市緑区">Yokohama Midori Ward</option>
+        <option value="横浜市旭区">Yokohama Asahi Ward</option>
+        <option value="新潟市中央区">Niigata Chuo Ward</option>
+        <option value="新潟市西区">Niigata Nishi Ward</option>
+        <option value="富山市">Toyama City</option>
+        <option value="高岡市">Takaoka City</option>
+        <option value="小松市">Komatsu City</option>
+        <option value="金沢市">Kanazawa City</option>
+        <option value="福井市">Fukui City</option>
+        <option value="甲府市">Kofu City</option>
+        <option value="長野市">Nagano City</option>
+        <option value="松本市">Matsumoto City</option>
+        <option value="岐阜市">Gifu City</option>
+        <option value="各務原市">Kakamigahara City</option>
+        <option value="大垣市">Ogaki City</option>
+        <option value="静岡市葵区">Shizuoka Aoi Ward</option>
+        <option value="静岡市清水区">Shizuoka Shimizu Ward</option>
+        <option value="浜松市中区">Hamamatsu Naka Ward</option>
+        <option value="沼津市">Numazu City</option>
+        <option value="名古屋市中区">Nagoya Naka Ward</option>
+        <option value="安城市">Anjo City</option>
+        <option value="名古屋市熱田区">Nagoya Atsuta Ward</option>
+        <option value="知立市">Chiryu City</option>
+        <option value="東海市">Tokai City</option>
+        <option value="尾張旭市">Owariasahi City</option>
+        <option value="名古屋市天白区">Nagoya Tenpaku Ward</option>
+        <option value="名古屋市西区">Nagoya Nishi Ward</option>
+        <option value="一宮市">Ichinomiya City</option>
+        <option value="稲沢市">Inazawa City</option>
+        <option value="刈谷市">Kariya City</option>
+        <option value="名古屋市中村区">Nagoya Nakamura Ward</option>
+        <option value="豊田市">Toyota City</option>
+        <option value="名古屋市南区">Nagoya Minami Ward</option>
+        <option value="名古屋市港区">Nagoya Minato Ward</option>
+        <option value="小牧市">Komaki City</option>
+        <option value="名古屋市東区">Nagoya Higashi Ward</option>
+        <option value="岡崎市">Okazaki City</option>
+        <option value="名古屋市千種区">Nagoya Chikusa Ward</option>
+        <option value="名古屋市守山区">Nagoya Moriyama Ward</option>
+        <option value="豊橋市">Toyohashi City</option>
+        <option value="名古屋市北区">Nagoya Kita Ward</option>
+        <option value="名古屋市緑区">Nagoya Midori Ward</option>
+        <option value="名古屋市昭和区">Nagoya Showa Ward</option>
+        <option value="名古屋市瑞穂区">Nagoya Mizuho Ward</option>
+        <option value="桑名市">Kuwana City</option>
+        <option value="伊勢市">Ise City</option>
+        <option value="四日市市">Yokkaichi City</option>
+        <option value="鈴鹿市">Suzuka City</option>
+        <option value="大津市">Otsu City</option>
+        <option value="草津市">Kusatsu City</option>
+        <option value="東近江市">Higashiomi City</option>
+        <option value="宇治市">Uji City</option>
+        <option value="京都市山科区">Kyoto Yamashina Ward</option>
+        <option value="京都市右京区">Kyoto Ukyo Ward</option>
+        <option value="長岡京市">Nagaokakyo City</option>
+        <option value="京都市伏見区">Kyoto Fushimi Ward</option>
+        <option value="京都市西京区">Kyoto Nishikyo Ward</option>
+        <option value="京都市中京区">Kyoto Nakagyo Ward</option>
+        <option value="大阪市此花区">Osaka Konohana Ward</option>
+        <option value="大阪市中央区">Osaka Chuo Ward</option>
+        <option value="堺市堺区">Sakai Sakai Ward</option>
+        <option value="大阪市東成区">Osaka Higashinari Ward</option>
+        <option value="大阪市大正区">Osaka Taisho Ward</option>
+        <option value="大阪市西区">Osaka Nishi Ward</option>
+        <option value="大阪市北区">Osaka Kita Ward</option>
+        <option value="大阪市淀川区">Osaka Yodogawa Ward</option>
+        <option value="大阪市城東区">Osaka Joto Ward</option>
+        <option value="大阪市住吉区">Osaka Sumiyoshi Ward</option>
+        <option value="大阪市浪速区">Osaka Naniwa Ward</option>
+        <option value="吹田市">Suita City</option>
+        <option value="守口市">Moriguchi City</option>
+        <option value="大阪市都島区">Osaka Miyakojima Ward</option>
+        <option value="豊中市">Toyonaka City</option>
+        <option value="大阪市港区">Osaka Minato Ward</option>
+        <option value="大阪市東淀川区">Osaka Higashiyodogawa Ward</option>
+        <option value="大阪市天王寺区">Osaka Tennoji Ward</option>
+        <option value="大阪市阿倍野区">Osaka Abeno Ward</option>
+        <option value="大阪市生野区">Osaka Ikuno Ward</option>
+        <option value="大阪市住之江区">Osaka Suminoe Ward</option>
+        <option value="枚方市">Hirakata City</option>
+        <option value="八尾市">Yao City</option>
+        <option value="摂津市">Settsu City</option>
+        <option value="池田市">Ikeda City</option>
+        <option value="高槻市">Takatsuki City</option>
+        <option value="大阪市西淀川区">Osaka Nishiyodogawa Ward</option>
+        <option value="神戸市兵庫区">Kobe Hyogo Ward</option>
+        <option value="神戸市北区">Kobe Kita Ward</option>
+        <option value="神戸市東灘区">Kobe Higashinada Ward</option>
+        <option value="神戸市中央区">Kobe Chuo Ward</option>
+        <option value="加古川市">Kakogawa City</option>
+        <option value="奈良市">Nara City</option>
+        <option value="大和高田市">Yamatotakada City</option>
+        <option value="生駒市">Ikoma City</option>
+        <option value="北葛城郡王寺町">Oji Town, Kitakatsuragi District</option>
+        <option value="和歌山市">Wakayama City</option>
+        <option value="米子市">Yonago City</option>
+        <option value="鳥取市">Tottori City</option>
+        <option value="松江市">Matsue City</option>
+        <option value="岡山市南区">Okayama Minami Ward</option>
+        <option value="岡山市北区">Okayama Kita Ward</option>
+        <option value="岡山市中区">Okayama Naka Ward</option>
+        <option value="倉敷市">Kurashiki City</option>
+        <option value="広島市中区">Hiroshima Naka Ward</option>
+        <option value="広島市安佐北区">Hiroshima Asakita Ward</option>
+        <option value="広島市南区">Hiroshima Minami Ward</option>
+        <option value="広島市西区">Hiroshima Nishi Ward</option>
+        <option value="広島市佐伯区">Hiroshima Saeki Ward</option>
+        <option value="安芸郡海田町">Kaita Town, Aki District</option>
+        <option value="福山市">Fukuyama City</option>
+      </select>
+    </div>
+    <div class="input-group">
+      <label for="Distance_from_Station_min">Distance from Station (min):</label>
+      <input type="number" id="Distance_from_Station_min" value="5">
+    </div>
+    <div class="input-group">
+      <label for="Floor_Plan">Floor Plan:</label>
+      <select id="Floor_Plan">
+        <option value="３ＬＤＫ">3LDK</option>
+        <option value="２ＤＫ">2DK</option>
+        <option value="４ＬＤＫ">4LDK</option>
+        <option value="２ＬＤＫ">2LDK</option>
+        <option value="１ＤＫ">1DK</option>
+        <option value="１Ｋ">1K</option>
+        <option value="１ＬＤＫ">1LDK</option>
+        <option value="１Ｒ">1R</option>
+        <option value="２ＬＤＫ＋Ｓ">2LDK+S</option>
+        <option value="３ＤＫ">3DK</option>
+        <option value="５ＤＫ">5DK</option>
+        <option value="オープンフロア">Open Floor</option>
+        <option value="４ＤＫ">4DK</option>
+        <option value="３ＬＤＫ＋Ｓ">3LDK+S</option>
+      </select>
+    </div>
+    <div class="input-group">
+      <label for="Area_sqm">Area (sqm):</label>
+      <input type="number" id="Area_sqm" value="35">
+    </div>
+    <div class="input-group">
+      <label for="Year_Built">Year Built:</label>
+      <input type="text" id="Year_Built" value="2">
+    </div>
+    <div class="input-group">
+      <label for="Building_Structure">Building Structure:</label>
+      <select id="Building_Structure">
+        <option value="ＲＣ">Reinforced Concrete (RC)</option>
+        <option value="ＳＲＣ">Steel Reinforced Concrete (SRC)</option>
+        <option value="鉄骨造">Steel-frame construction</option>
+      </select>
+    </div>
+    <div class="input-group">
+      <label for="Usage">Usage:</label>
+      <select id="Usage">
+        <option value="住宅">Residential</option>
+        <option value="事務所">Office</option>
+        <option value="その他">Other</option>
+      </select>
+    </div>
+    <div class="input-group">
+      <label for="Future_Use_Purpose">Future Use Purpose:</label>
+      <select id="Future_Use_Purpose">
+        <option value="">(None)</option>
+        <option value="住宅">Residential</option>
+        <option value="その他">Other</option>
+      </select>
+    </div>
+    <div class="input-group">
+      <label for="City_Planning">City Planning:</label>
+      <select id="City_Planning">
+        <option value="商業地域">Commercial Zone</option>
+        <option value="近隣商業地域">Neighborhood Commercial Zone</option>
+        <option value="第２種中高層住居専用地域">Type 2 Medium-to-High-Rise Residential Zone</option>
+        <option value="第１種住居地域">Type 1 Residential Zone</option>
+        <option value="準住居地域">Semi-Residential Zone</option>
+        <option value="工業専用地域">Industrial Zone</option>
+        <option value="準工業地域">Semi-Industrial Zone</option>
+        <option value="工業地域">Industrial Zone</option>
+        <option value="市街化調整区域">Urbanization Control Area</option>
+        <option value="市街化区域">Urbanization Promotion Area</option>
+        <option value="第２種住居地域">Type 2 Residential Zone</option>
+        <option value="第１種中高層住居専用地域">Type 1 Medium-to-High-Rise Residential Zone</option>
+        <option value="第２種低層住居専用地域">Type 2 Low-Rise Residential Zone</option>
+      </select>
+    </div>
+    <div class="input-group">
+      <label for="Building_to_Land_Ratio">Building to Land Ratio (%):</label>
+      <input type="number" id="Building_to_Land_Ratio" value="80">
+    </div>
+    <div class="input-group">
+      <label for="Floor_Area_Ratio">Floor Area Ratio (%):</label>
+      <input type="number" id="Floor_Area_Ratio" value="500">
+    </div>
+    <div class="input-group">
+      <label for="Renovation_Status">Renovation Status:</label>
+      <select id="Renovation_Status">
+        <option value="未改装">Not Renovated</option>
+        <option value="改装済">Renovated</option>
+      </select>
+    </div>
+    <div class="input-group">
+      <label for="Transaction_Circumstances">Transaction Circumstances:</label>
+      <select id="Transaction_Circumstances">
+        <option value="">(None)</option>
+        <option value="調停・競売等">Mediation / Auction, etc.</option>
+      </select>
+    </div>
+    <div class="input-group">
+      <label for="transaction_year">Transaction Year:</label>
+      <input type="number" id="transaction_year" value="2023">
+    </div>
+    <div class="input-group">
+      <label for="transaction_month">Transaction Month:</label>
+      <input type="number" id="transaction_month" value="12">
+    </div>
+
+    <button onclick="predictPrice()">Get Prediction</button>
+
+    <h3>Prediction Result:</h3>
+    <pre id="result">Waiting for input...</pre>
+  </div>
+
+  <script>
+    async function predictPrice() {
+      // Replace with your VM's external IP address
+      const url = 'http://<YOUR_VM_EXTERNAL_IP>:8501/v1/models/real_estate_price_model:predict';
+
+      const data = {
+        "instances": [
+          {
+            "Type": document.getElementById('Type').value,
+            "Prefecture": document.getElementById('Prefecture').value,
+            "City": document.getElementById('City').value,
+            "Distance_from_Station_min": parseFloat(document.getElementById('Distance_from_Station_min').value),
+            "Floor_Plan": document.getElementById('Floor_Plan').value,
+            "Area_sqm": parseFloat(document.getElementById('Area_sqm').value),
+            "Year_Built": document.getElementById('Year_Built').value,
+            "Building_Structure": document.getElementById('Building_Structure').value,
+            "Usage": document.getElementById('Usage').value,
+            "Future_Use_Purpose": document.getElementById('Future_Use_Purpose').value || "",
+            "City_Planning": document.getElementById('City_Planning').value,
+            "Building_to_Land_Ratio": parseFloat(document.getElementById('Building_to_Land_Ratio').value),
+            "Floor_Area_Ratio": parseFloat(document.getElementById('Floor_Area_Ratio').value),
+            "Renovation_Status": document.getElementById('Renovation_Status').value,
+            "Transaction_Circumstances": document.getElementById('Transaction_Circumstances').value || "",
+            "transaction_year": parseFloat(document.getElementById('transaction_year').value),
+            "transaction_month": parseFloat(document.getElementById('transaction_month').value)
+          }
+        ]
+      };
+
+      try {
+        const response = await fetch(url, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(data)
+        });
+
+        const result = await response.json();
+        document.getElementById("result").innerText = JSON.stringify(result, null, 2);
+        console.log(result);
+      } catch (error) {
+        document.getElementById("result").innerText = "Error: " + error;
+        console.error('Error:', error);
+      }
+    }
+  </script>
+</body>
+</html>
