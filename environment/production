@@ -1,0 +1,22 @@
+version: '3.8'
+services:
+  tensorflow-serving:
+    image: us-east1-docker.pkg.dev/stunning-cell-465612-n8/realestatemodels/real_estate:latest
+    ports:
+      - "8501:8501"
+    command: >
+      --rest_api_port=8501
+      --model_name=real_estate_price_model
+      --model_base_path=/models/real_estate_price_model
+      --rest_api_enable_cors_support=true
+    restart: unless-stopped
+
+  web-server:
+    image: python:3.9-slim
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./serving:/app
+    working_dir: /app
+    command: python -m http.server 8000
+    restart: unless-stopped
